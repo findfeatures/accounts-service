@@ -1,6 +1,5 @@
 import logging
 
-import features_better_logger
 import jwt
 from nameko import config
 from nameko.rpc import rpc
@@ -12,7 +11,6 @@ from users.dependencies.database.provider import Storage
 
 
 logger = logging.getLogger(__name__)
-features_better_logger.init("users", f"http://{config.get('LOGGER_HOST')}")
 
 
 class UsersService:
@@ -22,22 +20,12 @@ class UsersService:
 
     @http("GET", "/health-check")
     def health_check(self, request):
-        """
-        Basic health check that checks the service is running
-        correctly and the database is accessible.
-
-        Returns status code 200 if check is successful.
-        """
         self.storage.health_check()
         return 200, "OK"
 
     @rpc
     @utils.log_entrypoint
     def get_user(self, user_id):
-        """
-        Returns the information we have stored on the user
-        (such as email, display_name)
-        """
         try:
             user_details = self.storage.users.get(user_id)
 
@@ -57,11 +45,6 @@ class UsersService:
     @rpc
     @utils.log_entrypoint
     def create_user(self, user_details):
-        """
-        Creates a new user in the database. User must have
-        an unique email address.
-        """
-
         user_details = schemas.CreateUserRequest().load(user_details)
 
         try:
@@ -77,10 +60,6 @@ class UsersService:
     @rpc
     @utils.log_entrypoint
     def delete_user(self, user_id):
-        """
-        Soft deletes a user from the database. Can not undo this operation and
-        currently keeps the email address locked to be used again.
-        """
         try:
             self.storage.users.delete(user_id)
         except orm_exc.NoResultFound as e:
@@ -89,11 +68,6 @@ class UsersService:
     @rpc
     @utils.log_entrypoint
     def auth_user(self, email, password):
-        """
-        Authenticates a user from their email and password then returns a valid JWT.
-        If a user is deleted then this is returned as if the combination of email
-        and password is incorrect (no JWT).
-        """
         is_correct_password = self.storage.users.is_correct_password(email, password)
 
         jwt_result = {}

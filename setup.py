@@ -30,7 +30,6 @@ setuptools.setup(
         "marshmallow==3.0.1",
         "alembic==1.2.1",
         "PyJWT==1.7.1",
-        "features-better-logger==0.3",
     ],
     extras_require={
         "dev": [
