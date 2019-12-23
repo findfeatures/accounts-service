@@ -5,6 +5,7 @@ from users.service import UsersService
 import pytest
 from users.exceptions import UserNotAuthorised
 
+
 def test_auth_successful(config, runner_factory):
     runner = runner_factory(UsersService)
     container = get_container(runner, UsersService)
@@ -21,7 +22,7 @@ def test_auth_successful(config, runner_factory):
     with entrypoint_hook(container, "auth_user") as auth_user:
         result = auth_user(email=email, password=password)
 
-        assert result == (True, {"JWT": ANY})
+        assert result == {"JWT": ANY}
 
         assert storage.users.is_correct_password.call_args == call(email, password)
 

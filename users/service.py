@@ -70,6 +70,7 @@ class UsersService:
     @utils.log_entrypoint
     def auth_user(self, email, password):
         is_correct_password = self.storage.users.is_correct_password(email, password)
+
         if not is_correct_password:
             raise UserNotAuthorised("user not authorised for this request")
 
@@ -86,4 +87,4 @@ class UsersService:
             ).decode("utf-8")
         }
 
-        return is_correct_password, jwt_result
+        return jwt_result
