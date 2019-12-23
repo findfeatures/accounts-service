@@ -5,6 +5,7 @@ from mock import call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy.orm import exc as orm_exc
+from users.exceptions import UserDoesNotExist
 from users.service import UsersService
 
 
@@ -79,5 +80,5 @@ def test_get_unsuccessful(config, runner_factory):
     storage.users.get.side_effect = orm_exc.NoResultFound()
 
     with entrypoint_hook(container, "get_user") as get_user:
-        with pytest.raises(ValueError):
+        with pytest.raises(UserDoesNotExist):
             get_user(user_id=123)

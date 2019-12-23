@@ -4,7 +4,7 @@ from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy import exc
 from users.service import UsersService
-
+from users.exceptions import UserAlreadyExists
 
 def test_create_user_successful(config, runner_factory):
     runner = runner_factory(UsersService)
@@ -47,7 +47,7 @@ def test_create_user_unsuccessful(config, runner_factory):
     }
     with entrypoint_hook(container, "create_user") as create_user:
 
-        with pytest.raises(ValueError):
+        with pytest.raises(UserAlreadyExists):
             create_user(user_details=payload)
 
         assert storage.users.create.call_args == call(

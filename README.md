@@ -15,7 +15,6 @@ To run the service
 Make run
 ```
 
-
 (To install a pyenv virtualenv)
 ```bash
 pyenv virtualenv -p python3.6 3.6.8 user-serv

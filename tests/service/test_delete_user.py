@@ -3,6 +3,7 @@ from mock import call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy.orm import exc as orm_exc
+from users.exceptions import UserDoesNotExist
 from users.service import UsersService
 
 
@@ -35,7 +36,7 @@ def test_delete_user_unsuccessful(config, runner_factory):
     user_id = 100
 
     with entrypoint_hook(container, "delete_user") as delete_user:
-        with pytest.raises(ValueError):
+        with pytest.raises(UserDoesNotExist):
             delete_user(user_id=user_id)
 
         assert storage.users.delete.call_args == call(user_id)

@@ -8,6 +8,7 @@ from sqlalchemy import exc
 from sqlalchemy.orm import exc as orm_exc
 from users import schemas, utils
 from users.dependencies.database.provider import Storage
+from users.exceptions import UserAlreadyExists, UserDoesNotExist, UserNotAuthorised
 
 
 logger = logging.getLogger(__name__)
@@ -23,7 +24,7 @@ class UsersService:
         self.storage.health_check()
         return 200, "OK"
 
-    @rpc
+    @rpc(expected_exceptions=(UserDoesNotExist,))
     @utils.log_entrypoint
     def get_user(self, user_id):
         try:
@@ -40,9 +41,9 @@ class UsersService:
 
             return user_details
         except orm_exc.NoResultFound:
-            raise ValueError(f"User with id {user_id} does not exist")
+            raise UserDoesNotExist(f"User with id {user_id} does not exist")
 
-    @rpc
+    @rpc(expected_exceptions=(UserAlreadyExists,))
     @utils.log_entrypoint
     def create_user(self, user_details):
         user_details = schemas.CreateUserRequest().load(user_details)
@@ -55,35 +56,34 @@ class UsersService:
             )
             return user_id
         except exc.IntegrityError:
-            raise ValueError(f'email {user_details["email"]} already exists')
+            raise UserAlreadyExists(f'email {user_details["email"]} already exists')
 
-    @rpc
+    @rpc(expected_exceptions=(UserDoesNotExist,))
     @utils.log_entrypoint
     def delete_user(self, user_id):
         try:
             self.storage.users.delete(user_id)
         except orm_exc.NoResultFound as e:
-            raise ValueError(f"user_id {user_id} does not exist")
+            raise UserDoesNotExist(f"user_id {user_id} does not exist")
 
-    @rpc
+    @rpc(expected_exceptions=(UserNotAuthorised,))
     @utils.log_entrypoint
     def auth_user(self, email, password):
         is_correct_password = self.storage.users.is_correct_password(email, password)
+        if not is_correct_password:
+            raise UserNotAuthorised("user not authorised for this request")
 
-        jwt_result = {}
+        # not the most ideal code but i want to keep the
+        # requests here to storage quite easy to test
+        # and maintain
+        user_details = self.storage.users.get_from_email(email)
 
-        if is_correct_password:
-            # not the most ideal code but i want to keep the
-            # requests here to storage quite easy to test
-            # and maintain
-            user_details = self.storage.users.get_from_email(email)
-
-            jwt_result = {
-                "JWT": jwt.encode(
-                    {"user_id": user_details["id"], "email": user_details["email"]},
-                    config.get("JWT_SECRET"),
-                    algorithm="HS256",
-                ).decode("utf-8")
-            }
+        jwt_result = {
+            "JWT": jwt.encode(
+                {"user_id": user_details["id"], "email": user_details["email"]},
+                config.get("JWT_SECRET"),
+                algorithm="HS256",
+            ).decode("utf-8")
+        }
 
         return is_correct_password, jwt_result

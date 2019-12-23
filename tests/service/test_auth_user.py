@@ -2,7 +2,8 @@ from mock import ANY, call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from users.service import UsersService
-
+import pytest
+from users.exceptions import UserNotAuthorised
 
 def test_auth_successful(config, runner_factory):
     runner = runner_factory(UsersService)
@@ -39,9 +40,8 @@ def test_auth_unsuccessful(config, runner_factory):
     password = "password"
 
     with entrypoint_hook(container, "auth_user") as auth_user:
-        result = auth_user(email=email, password=password)
-
-        assert result == (False, {})
+        with pytest.raises(UserNotAuthorised):
+            auth_user(email=email, password=password)
 
         assert storage.users.is_correct_password.call_args == call(email, password)
         assert storage.users.get_from_email.called is False
