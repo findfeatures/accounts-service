@@ -12,13 +12,12 @@ setuptools.setup(
     description="Features User Service",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/calumpwebb/Features",
+    url="https://github.com/findfeatures/users-service",
     packages=setuptools.find_packages(exclude=["tests", "alembic", "build", "dist"]),
     zip_safe=True,
     install_requires=[
         "nameko==3.0.0-rc6",
         "nameko-sentry==1.0.0",
-        "nameko-tracer==1.2.0",
         "ddtrace==0.27.1",
         "nameko-sqlalchemy==1.5.0",
         "psycopg2-binary==2.8.3",
@@ -26,13 +25,12 @@ setuptools.setup(
         "udatetime==0.0.16",
         "marshmallow==3.0.1",
         "python-dateutil==2.8.0",
-        "nameko-grpc==1.0.1",
-        "grpcio-tools==1.25.0",
         "SQLAlchemy-Utils==0.36.0",
         "passlib==1.7.2",
         "marshmallow==3.0.1",
         "alembic==1.2.1",
         "PyJWT==1.7.1",
+        "features-better-logger==0.3",
     ],
     extras_require={
         "dev": [
@@ -45,6 +43,7 @@ setuptools.setup(
             "coverage==4.5.3",
             "pytest-cov==2.7.1",
             "pytest-pgsql==1.1.1",
+            "pdbpp==0.10.2",
             "responses==0.10.6",
         ]
     },

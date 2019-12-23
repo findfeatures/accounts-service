@@ -1,5 +1,6 @@
 import logging
 
+import features_better_logger
 import jwt
 from nameko import config
 from nameko.rpc import rpc
@@ -11,6 +12,7 @@ from users.dependencies.database.provider import Storage
 
 
 logger = logging.getLogger(__name__)
+features_better_logger.init("users", "http://localhost:8002")
 
 
 class UsersService:

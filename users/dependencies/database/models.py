@@ -1,6 +1,5 @@
 from sqlalchemy import Column, DateTime, Integer, Text, text
 from sqlalchemy.ext.declarative import declarative_base
-
 # install sqlalchemy_utils
 from sqlalchemy_utils import EmailType, PasswordType
 
