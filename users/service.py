@@ -12,7 +12,7 @@ from users.dependencies.database.provider import Storage
 
 
 logger = logging.getLogger(__name__)
-features_better_logger.init("users", "http://localhost:8002")
+features_better_logger.init("users", f"http://{config.get('LOGGER_HOST')}")
 
 
 class UsersService:

@@ -107,3 +107,4 @@ venv.bak/
 .pytest_cache/
 .idea/
 .coverage-html/
+.DS_Store
