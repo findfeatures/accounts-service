@@ -6,6 +6,7 @@ from nameko_sqlalchemy import Database
 from sqlalchemy.orm import exc as orm_exc
 from users import utils
 from users.dependencies.database.models import Base, User, UserToken
+from users.exceptions.user_tokens import InvalidToken
 
 
 class Collection:
@@ -59,6 +60,15 @@ class Users(Collection):
 
         return user.password == password
 
+    def update_verified(self, user_id, verified):
+        with self.db.get_session() as session:
+            user = session.query(self.model).get(user_id)
+
+            if not user:
+                raise orm_exc.NoResultFound(f"No user with id {user_id} found")
+
+            user.verified = verified
+
 
 class UserTokens(Collection):
     name = "user_tokens"
@@ -69,6 +79,20 @@ class UserTokens(Collection):
 
         with self.db.get_session() as session:
             session.add(new_token)
+
+    def verify_token(self, user_id, token):
+        token_from_db = (
+            self.db.session.query(self.model)
+            .filter_by(user_id=user_id)
+            .order_by(self.model.created_datetime_utc.desc())
+            .first()
+        )
+
+        if not token_from_db:
+            raise InvalidToken(f"No token in db for user {user_id}")
+
+        if token != token_from_db.token:
+            raise InvalidToken("token is invalid")
 
 
 class StorageWrapper:

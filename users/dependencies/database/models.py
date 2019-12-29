@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Table, Text, text
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EmailType, PasswordType
 
 
@@ -57,3 +58,4 @@ class UserToken(IDMixin, CreatedTimestampMixin, Base):
     token = Column(PasswordType(schemes=["pbkdf2_sha512"]), nullable=False)
 
     user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", primaryjoin=user_id == User.id)

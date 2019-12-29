@@ -13,6 +13,7 @@ from users.exceptions.users import (
     UserDoesNotExist,
     UserNotAuthorised,
 )
+from users.exceptions.user_tokens import InvalidToken
 from users.service.base import ServiceMixin
 from users.utils import generate_token
 
@@ -60,15 +61,11 @@ class UsersServiceMixin(ServiceMixin):
                 user_details["display_name"],
             )
 
-            token = generate_token(
-                str(uuid4().hex),
-            )
+            token = generate_token(str(uuid4().hex))
 
             self.storage.user_tokens.create(user_id, token)
 
-            self.sendgrid.send_signup_verification(
-                user_details["email"], token
-            )
+            self.sendgrid.send_signup_verification(user_details["email"], token)
 
             return user_id
         except exc.IntegrityError:
@@ -104,3 +101,19 @@ class UsersServiceMixin(ServiceMixin):
         }
 
         return jwt_result
+
+    @rpc(expected_exceptions=(UserNotAuthorised,))
+    @utils.log_entrypoint
+    def verify_user(self, email, token):
+        try:
+            user = self.storage.users.get_from_email(email)
+
+            self.storage.user_token.verify_token(user["id"], token)
+
+            self.storage.users.update_verified(user["id"], True)
+
+        except orm_exc.NoResultFound:
+            raise UserNotAuthorised(f"user not authorised for this request")
+
+        except InvalidToken:
+            raise UserNotAuthorised(f"user not authorised for this request")

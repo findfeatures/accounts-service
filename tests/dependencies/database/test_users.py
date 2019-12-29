@@ -16,24 +16,28 @@ def service_container(db, container_factory):
         storage = Storage()
 
         @dummy
-        def get(self, *args, **data):
-            return self.storage.users.get(*args, **data)
+        def get(self, *args, **kwargs):
+            return self.storage.users.get(*args, **kwargs)
 
         @dummy
-        def get_from_email(self, *args, **data):
-            return self.storage.users.get_from_email(*args, **data)
+        def get_from_email(self, *args, **kwargs):
+            return self.storage.users.get_from_email(*args, **kwargs)
 
         @dummy
-        def create(self, *args, **data):
-            return self.storage.users.create(*args, **data)
+        def create(self, *args, **kwargs):
+            return self.storage.users.create(*args, **kwargs)
 
         @dummy
-        def delete(self, *args, **data):
-            return self.storage.users.delete(*args, **data)
+        def delete(self, *args, **kwargs):
+            return self.storage.users.delete(*args, **kwargs)
 
         @dummy
-        def is_correct_password(self, *args, **data):
-            return self.storage.users.is_correct_password(*args, **data)
+        def is_correct_password(self, *args, **kwargs):
+            return self.storage.users.is_correct_password(*args, **kwargs)
+
+        @dummy
+        def update_verified(self, *args, **kwargs):
+            return self.storage.users.update_verified(*args, **kwargs)
 
     container = container_factory(Service)
     container.start()
@@ -202,3 +206,31 @@ def test_is_correct_password_false_with_deleted_user(db, service_container):
         result = is_correct_password("test@google.com", "password")
 
         assert result is False
+
+
+def test_update_verified_true(db, service_container):
+    user = User(
+        email="test@google.com",
+        password="password",
+        display_name="Test Account",
+        deleted_datetime_utc=datetime.datetime.utcnow(),
+    )
+    db.session.add(user)
+    db.session.commit()
+
+    assert user.verified is False
+
+    with entrypoint_hook(service_container, "update_verified") as update_verified:
+        update_verified(user.id, True)
+    db.session.commit()
+
+    user_from_db = db.session.query(User).get(user.id)
+
+    assert user_from_db.verified is True
+
+
+def test_update_verified_user_doesnt_exist(db, service_container):
+
+    with entrypoint_hook(service_container, "update_verified") as update_verified:
+        with pytest.raises(orm_exc.NoResultFound):
+            update_verified(3, True)
