@@ -1,6 +1,8 @@
 import logging
-
+from uuid import uuid4
 import jwt
+import datetime
+
 from nameko import config
 from nameko.rpc import rpc
 from sqlalchemy import exc
@@ -12,6 +14,7 @@ from users.exceptions.users import (
     UserNotAuthorised,
 )
 from users.service.base import ServiceMixin
+from users.utils import generate_token
 
 
 logger = logging.getLogger(__name__)
@@ -56,6 +59,17 @@ class UsersServiceMixin(ServiceMixin):
                 user_details["password"],
                 user_details["display_name"],
             )
+
+            token = generate_token(
+                str(uuid4().hex),
+            )
+
+            self.storage.user_tokens.create(user_id, token)
+
+            self.sendgrid.send_signup_verification(
+                user_details["email"], token
+            )
+
             return user_id
         except exc.IntegrityError:
             raise UserAlreadyExists(f'email {user_details["email"]} already exists')

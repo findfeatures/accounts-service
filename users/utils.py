@@ -1,6 +1,7 @@
 import logging
+import datetime
 from functools import wraps
-
+from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
@@ -42,3 +43,7 @@ def sa_to_dict(sensitive_fields=None):
         return wrapper
 
     return actual_decorator
+
+
+def generate_token(uuid):
+    return f"FF.{uuid}"

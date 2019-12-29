@@ -1,5 +1,5 @@
 import pytest
-from mock import call
+from mock import call, patch
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy import exc
@@ -10,10 +10,11 @@ from users.service import UsersService
 def test_create_user_successful(config, runner_factory):
     runner = runner_factory(UsersService)
     container = get_container(runner, UsersService)
-    storage = replace_dependencies(container, "storage")
+    storage, sendgrid = replace_dependencies(container, "storage", "sendgrid")
     runner.start()
 
     storage.users.create.return_value = 1
+    storage.user_tokens.create.return_value = "randomtoken"
 
     payload = {
         "email": "test@email.com",
@@ -21,13 +22,18 @@ def test_create_user_successful(config, runner_factory):
         "display_name": "Test Account",
     }
     with entrypoint_hook(container, "create_user") as create_user:
-        result = create_user(user_details=payload)
+        with patch("users.service.users.generate_token", return_value="token"):
 
-        # can't really check the
+            result = create_user(user_details=payload)
+
         assert result == 1
 
         assert storage.users.create.call_args == call(
             payload["email"], payload["password"], payload["display_name"]
+        )
+
+        assert sendgrid.send_signup_verification.call_args == call(
+            payload["email"], "token"
         )
 
 

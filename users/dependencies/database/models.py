@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, Integer, Text, text, Table, ForeignKey
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Table, Text, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import EmailType, PasswordType
 
@@ -12,17 +12,20 @@ class IDMixin:
     id = Column(Integer, primary_key=True, nullable=False)
 
 
-class TimestampMixin:
+class CreatedTimestampMixin:
     created_datetime_utc = Column(
         DateTime, nullable=False, server_default=text("(now() at time zone 'utc')")
     )
+
+
+class DeletedTimestampMixin:
     deleted_datetime_utc = Column(DateTime, nullable=True)
 
 
 """SQLAlchemy Models"""
 
 
-class User(IDMixin, TimestampMixin, Base):
+class User(IDMixin, CreatedTimestampMixin, DeletedTimestampMixin, Base):
     __tablename__ = "users"
 
     email = Column(EmailType, nullable=False, index=True, unique=True)
@@ -31,16 +34,26 @@ class User(IDMixin, TimestampMixin, Base):
 
     password = Column(PasswordType(schemes=["pbkdf2_sha512"]), nullable=False)
 
-
-class Organization(IDMixin, TimestampMixin, Base):
-    __tablename__ = "organizations"
-
-    name = Column(Text, nullable=False)
+    verified = Column(Boolean, default=False, server_default="f")
 
 
-user_organization_table = Table(
-    "users_organizations",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("users.id")),
-    Column("organization_id", Integer, ForeignKey("organizations.id")),
-)
+# class Organization(IDMixin, CreatedTimestampMixin, DeletedTimestampMixin, Base):
+#     __tablename__ = "organizations"
+#
+#     name = Column(Text, nullable=False)
+#
+#
+# user_organization_table = Table(
+#     "users_organizations",
+#     Base.metadata,
+#     Column("user_id", Integer, ForeignKey("users.id")),
+#     Column("organization_id", Integer, ForeignKey("organizations.id")),
+# )
+
+
+class UserToken(IDMixin, CreatedTimestampMixin, Base):
+    __tablename__ = "user_tokens"
+
+    token = Column(PasswordType(schemes=["pbkdf2_sha512"]), nullable=False)
+
+    user_id = Column(Integer, ForeignKey("users.id"))

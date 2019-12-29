@@ -57,6 +57,7 @@ def test_get_user_successful(db, service_container):
         "display_name": user.display_name,
         "created_datetime_utc": user.created_datetime_utc,
         "deleted_datetime_utc": user.deleted_datetime_utc,  # None,
+        "verified": False,
     }
 
 
@@ -82,6 +83,7 @@ def test_get_user_from_email_successful(db, service_container):
         "display_name": user.display_name,
         "created_datetime_utc": user.created_datetime_utc,
         "deleted_datetime_utc": user.deleted_datetime_utc,  # None,
+        "verified": False,
     }
 
 

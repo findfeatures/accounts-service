@@ -25,6 +25,7 @@ def test_get_successful(config, runner_factory):
         "email": email,
         "created_datetime_utc": created_datetime_utc,
         "deleted_datetime_utc": deleted_datetime_utc,
+        "verified": False,
     }
 
     with entrypoint_hook(container, "get_user") as get_user:
@@ -37,6 +38,7 @@ def test_get_successful(config, runner_factory):
             "email": email,
             "created_datetime_utc": created_datetime_utc.isoformat(),
             "deleted_datetime_utc": None,
+            "verified": False,
         }
 
 
@@ -56,6 +58,7 @@ def test_get_successful_with_deleted_datetime(config, runner_factory):
         "email": email,
         "created_datetime_utc": created_datetime_utc,
         "deleted_datetime_utc": deleted_datetime_utc,
+        "verified": False,
     }
 
     with entrypoint_hook(container, "get_user") as get_user:
@@ -68,6 +71,7 @@ def test_get_successful_with_deleted_datetime(config, runner_factory):
             "email": email,
             "created_datetime_utc": created_datetime_utc.isoformat(),
             "deleted_datetime_utc": deleted_datetime_utc.isoformat(),
+            "verified": False,
         }
 
 

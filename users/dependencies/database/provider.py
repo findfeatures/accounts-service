@@ -5,7 +5,7 @@ from nameko import config
 from nameko_sqlalchemy import Database
 from sqlalchemy.orm import exc as orm_exc
 from users import utils
-from users.dependencies.database.models import Base, User
+from users.dependencies.database.models import Base, User, UserToken
 
 
 class Collection:
@@ -60,6 +60,17 @@ class Users(Collection):
         return user.password == password
 
 
+class UserTokens(Collection):
+    name = "user_tokens"
+    model = UserToken
+
+    def create(self, user_id, token):
+        new_token = self.model(user_id=user_id, token=token)
+
+        with self.db.get_session() as session:
+            session.add(new_token)
+
+
 class StorageWrapper:
     def __init__(self, db, collections):
         self.db = db
@@ -75,7 +86,7 @@ class StorageWrapper:
 
 
 class Storage(Database):
-    collections = [Users]
+    collections = [Users, UserTokens]
 
     def __init__(self):
         engine_options = {

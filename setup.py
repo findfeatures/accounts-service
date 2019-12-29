@@ -30,6 +30,7 @@ setuptools.setup(
         "marshmallow==3.0.1",
         "alembic==1.2.1",
         "PyJWT==1.7.1",
+        "sendgrid==6.1.0",
     ],
     extras_require={
         "dev": [

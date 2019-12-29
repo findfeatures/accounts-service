@@ -1,5 +1,5 @@
 from mock import Mock
-from users.utils import log_entrypoint, sa_to_dict
+from users.utils import log_entrypoint, sa_to_dict, generate_token
 
 
 def test_log_entrypoint_calls_function():
@@ -47,3 +47,9 @@ def test_sa_to_dict_with_sensitive_fields():
     result = fake_func()
 
     assert result == {"key_1": "value_1", "key_2": 123}
+
+
+def test_generate_token():
+    uuid = "123"
+
+    assert generate_token(uuid) == f"FF.{uuid}"
