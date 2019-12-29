@@ -37,6 +37,14 @@ class UsersServiceMixin(ServiceMixin):
         except orm_exc.NoResultFound:
             raise UserDoesNotExist(f"User with id {user_id} does not exist")
 
+    @rpc
+    def user_already_exists(self, email):
+        try:
+            self.storage.users.get_from_email(email)
+            return True
+        except orm_exc.NoResultFound:
+            return False
+
     @rpc(expected_exceptions=(UserAlreadyExists,))
     @utils.log_entrypoint
     def create_user(self, user_details):
@@ -57,7 +65,7 @@ class UsersServiceMixin(ServiceMixin):
     def delete_user(self, user_id):
         try:
             self.storage.users.delete(user_id)
-        except orm_exc.NoResultFound as e:
+        except orm_exc.NoResultFound:
             raise UserDoesNotExist(f"user_id {user_id} does not exist")
 
     @rpc(expected_exceptions=(UserNotAuthorised,))
