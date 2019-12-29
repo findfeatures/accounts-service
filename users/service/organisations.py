@@ -2,6 +2,7 @@ import logging
 
 from users.service.base import ServiceMixin
 
+
 logger = logging.getLogger(__name__)
 
 

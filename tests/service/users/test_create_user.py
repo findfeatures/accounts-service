@@ -3,8 +3,9 @@ from mock import call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy import exc
-from users.service import UsersService
 from users.exceptions.users import UserAlreadyExists
+from users.service import UsersService
+
 
 def test_create_user_successful(config, runner_factory):
     runner = runner_factory(UsersService)

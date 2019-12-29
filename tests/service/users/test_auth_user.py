@@ -1,9 +1,9 @@
+import pytest
 from mock import ANY, call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
-from users.service import UsersService
-import pytest
 from users.exceptions.users import UserNotAuthorised
+from users.service import UsersService
 
 
 def test_auth_successful(config, runner_factory):
