@@ -55,7 +55,7 @@ class Users(Collection):
     def is_correct_password(self, email, password):
         user = self.db.session.query(self.model).filter_by(email=email).one_or_none()
 
-        if not user or user.deleted_datetime_utc is not None:
+        if not user or user.deleted_datetime_utc is not None or not user.verified:
             return False
 
         return user.password == password

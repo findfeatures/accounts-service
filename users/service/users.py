@@ -108,7 +108,7 @@ class UsersServiceMixin(ServiceMixin):
         try:
             user = self.storage.users.get_from_email(email)
 
-            self.storage.user_token.verify_token(user["id"], token)
+            self.storage.user_tokens.verify_token(user["id"], token)
 
             self.storage.users.update_verified(user["id"], True)
 

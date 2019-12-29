@@ -152,7 +152,10 @@ def test_delete_user_successful(db, service_container):
 
 def test_is_correct_password_true(db, service_container):
     user = User(
-        email="test@google.com", password="password", display_name="Test Account"
+        email="test@google.com",
+        password="password",
+        display_name="Test Account",
+        verified=True,
     )
     db.session.add(user)
     db.session.commit()
@@ -167,7 +170,10 @@ def test_is_correct_password_true(db, service_container):
 
 def test_is_correct_password_false(db, service_container):
     user = User(
-        email="test@google.com", password="password", display_name="Test Account"
+        email="test@google.com",
+        password="password",
+        display_name="Test Account",
+        verified=True,
     )
     db.session.add(user)
     db.session.commit()
@@ -176,6 +182,24 @@ def test_is_correct_password_false(db, service_container):
         service_container, "is_correct_password"
     ) as is_correct_password:
         result = is_correct_password(user.email, "not_the_password")
+
+        assert result is False
+
+
+def test_is_correct_password_but_not_verified(db, service_container):
+    user = User(
+        email="test@google.com",
+        password="password",
+        display_name="Test Account",
+        verified=False,
+    )
+    db.session.add(user)
+    db.session.commit()
+
+    with entrypoint_hook(
+        service_container, "is_correct_password"
+    ) as is_correct_password:
+        result = is_correct_password(user.email, "password")
 
         assert result is False
 
