@@ -1,4 +1,3 @@
-import datetime
 import logging
 from uuid import uuid4
 
@@ -13,6 +12,7 @@ from users.exceptions.users import (
     UserAlreadyExists,
     UserDoesNotExist,
     UserNotAuthorised,
+    UserNotVerified
 )
 from users.service.base import ServiceMixin
 from users.utils import generate_token
@@ -79,7 +79,7 @@ class UsersServiceMixin(ServiceMixin):
         except orm_exc.NoResultFound:
             raise UserDoesNotExist(f"user_id {user_id} does not exist")
 
-    @rpc(expected_exceptions=(UserNotAuthorised,))
+    @rpc(expected_exceptions=(UserNotAuthorised, UserNotVerified))
     @utils.log_entrypoint
     def auth_user(self, email, password):
         is_correct_password = self.storage.users.is_correct_password(email, password)
@@ -91,6 +91,9 @@ class UsersServiceMixin(ServiceMixin):
         # requests here to storage quite easy to test
         # and maintain
         user_details = self.storage.users.get_from_email(email)
+
+        if not user_details['verified']:
+            raise UserNotVerified("user is not verified")
 
         jwt_result = {
             "JWT": jwt.encode(

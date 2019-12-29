@@ -186,24 +186,6 @@ def test_is_correct_password_false(db, service_container):
         assert result is False
 
 
-def test_is_correct_password_but_not_verified(db, service_container):
-    user = User(
-        email="test@google.com",
-        password="password",
-        display_name="Test Account",
-        verified=False,
-    )
-    db.session.add(user)
-    db.session.commit()
-
-    with entrypoint_hook(
-        service_container, "is_correct_password"
-    ) as is_correct_password:
-        result = is_correct_password(user.email, "password")
-
-        assert result is False
-
-
 def test_is_correct_password_false_with_missing_user(db, service_container):
 
     with entrypoint_hook(

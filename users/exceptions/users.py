@@ -8,3 +8,7 @@ class UserDoesNotExist(Exception):
 
 class UserNotAuthorised(Exception):
     pass
+
+
+class UserNotVerified(Exception):
+    pass

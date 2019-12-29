@@ -39,7 +39,7 @@ class SendGridWrapper:
 
     def send_signup_verification(self, to_email, token):
 
-        url = f"{self.web_app_address}/activate-email?token={token}"
+        url = f"{self.web_app_address}/activate-email?token={token}&email={to_email}"
 
         html = f'FindFeatures: Click here to activate your account <a href="{url}">{url}</a>'
         self._send_mail(to_email, "FindFeatures: Verify your email!", html)
