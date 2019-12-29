@@ -6,7 +6,7 @@ from nameko.rpc import rpc
 from sqlalchemy import exc
 from sqlalchemy.orm import exc as orm_exc
 from users import schemas, utils
-from users.exceptions import UserAlreadyExists, UserDoesNotExist, UserNotAuthorised
+from users.exceptions.users import UserAlreadyExists, UserDoesNotExist, UserNotAuthorised
 from users.service.base import ServiceMixin
 
 logger = logging.getLogger(__name__)

@@ -3,7 +3,7 @@ from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from users.service import UsersService
 import pytest
-from users.exceptions import UserNotAuthorised
+from users.exceptions.users import UserNotAuthorised
 
 
 def test_auth_successful(config, runner_factory):

@@ -5,7 +5,7 @@ from mock import call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy.orm import exc as orm_exc
-from users.exceptions import UserDoesNotExist
+from users.exceptions.users import UserDoesNotExist
 from users.service import UsersService
 
 
