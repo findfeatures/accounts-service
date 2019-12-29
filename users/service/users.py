@@ -3,26 +3,16 @@ import logging
 import jwt
 from nameko import config
 from nameko.rpc import rpc
-from nameko.web.handlers import http
 from sqlalchemy import exc
 from sqlalchemy.orm import exc as orm_exc
 from users import schemas, utils
-from users.dependencies.database.provider import Storage
 from users.exceptions import UserAlreadyExists, UserDoesNotExist, UserNotAuthorised
-
+from users.service.base import ServiceMixin
 
 logger = logging.getLogger(__name__)
 
 
-class UsersService:
-    name = "users"
-
-    storage = Storage()
-
-    @http("GET", "/health-check")
-    def health_check(self, request):
-        self.storage.health_check()
-        return 200, "OK"
+class UsersServiceMixin(ServiceMixin):
 
     @rpc(expected_exceptions=(UserDoesNotExist,))
     @utils.log_entrypoint

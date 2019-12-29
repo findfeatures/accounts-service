@@ -1,5 +1,10 @@
 # User Service
 
+The users service looks after:
+- User accounts
+- Details regarding "Organizations"
+
+# Installation
 Install the requirements into your virtualenv
 ```bash
 pip install -e ".[dev]"

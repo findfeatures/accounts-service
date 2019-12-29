@@ -18,7 +18,7 @@ check-coverage:
 	coverage report -m --fail-under 100
 
 run:
-	nameko run --config config.yml users.service
+	nameko run --config config.yml users.service:UsersService
 
 build-image:
 	docker build -t calumwebb/users-service:$(TAG) .;
