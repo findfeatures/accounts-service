@@ -1,19 +1,19 @@
+import datetime
 import logging
 from uuid import uuid4
-import jwt
-import datetime
 
+import jwt
 from nameko import config
 from nameko.rpc import rpc
 from sqlalchemy import exc
 from sqlalchemy.orm import exc as orm_exc
 from users import schemas, utils
+from users.exceptions.user_tokens import InvalidToken
 from users.exceptions.users import (
     UserAlreadyExists,
     UserDoesNotExist,
     UserNotAuthorised,
 )
-from users.exceptions.user_tokens import InvalidToken
 from users.service.base import ServiceMixin
 from users.utils import generate_token
 

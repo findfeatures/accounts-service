@@ -1,9 +1,8 @@
-import pytest
 import datetime
 
+import pytest
 from nameko.testing.services import dummy, entrypoint_hook
-
-from users.dependencies.database.models import UserToken, User
+from users.dependencies.database.models import User, UserToken
 from users.dependencies.database.provider import Storage
 from users.exceptions.user_tokens import InvalidToken
 

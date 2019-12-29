@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 
 from nameko import config
 from nameko.extensions import DependencyProvider

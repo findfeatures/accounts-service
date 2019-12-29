@@ -1,8 +1,8 @@
 from mock import call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
-from users.service import UsersService
 from sqlalchemy.orm import exc as orm_exc
+from users.service import UsersService
 
 
 def test_user_already_exists_true(config, runner_factory):

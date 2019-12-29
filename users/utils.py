@@ -1,7 +1,8 @@
-import logging
 import datetime
+import logging
 from functools import wraps
 from uuid import uuid4
+
 
 logger = logging.getLogger(__name__)
 
