@@ -17,7 +17,11 @@ def test_auth_successful(config, runner_factory):
     password = "password"
 
     storage.users.is_correct_password.return_value = True
-    storage.users.get_from_email.return_value = {"id": user_id, "email": email, "verified": True}
+    storage.users.get_from_email.return_value = {
+        "id": user_id,
+        "email": email,
+        "verified": True,
+    }
 
     with entrypoint_hook(container, "auth_user") as auth_user:
         result = auth_user(email=email, password=password)
@@ -59,8 +63,11 @@ def test_auth_successful_but_not_verified(config, runner_factory):
     password = "password"
 
     storage.users.is_correct_password.return_value = True
-    storage.users.get_from_email.return_value = {"id": user_id, "email": email,
-                                                 "verified": False}
+    storage.users.get_from_email.return_value = {
+        "id": user_id,
+        "email": email,
+        "verified": False,
+    }
 
     with entrypoint_hook(container, "auth_user") as auth_user:
         with pytest.raises(UserNotVerified):

@@ -12,7 +12,7 @@ from users.exceptions.users import (
     UserAlreadyExists,
     UserDoesNotExist,
     UserNotAuthorised,
-    UserNotVerified
+    UserNotVerified,
 )
 from users.service.base import ServiceMixin
 from users.utils import generate_token
@@ -92,7 +92,7 @@ class UsersServiceMixin(ServiceMixin):
         # and maintain
         user_details = self.storage.users.get_from_email(email)
 
-        if not user_details['verified']:
+        if not user_details["verified"]:
             raise UserNotVerified("user is not verified")
 
         jwt_result = {
