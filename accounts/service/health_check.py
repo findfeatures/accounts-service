@@ -1,5 +1,5 @@
 from nameko.web.handlers import http
-from users.service.base import ServiceMixin
+from accounts.service.base import ServiceMixin
 
 
 class HealthCheckServiceMixin(ServiceMixin):

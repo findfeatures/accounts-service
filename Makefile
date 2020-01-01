@@ -11,17 +11,17 @@ static:
 	pre-commit run --all-files
 
 coverage:
-	coverage run --concurrency=eventlet --source users --branch -m pytest --alluredir=$(ALLURE_DIR) tests$(ARGS)
+	coverage run --concurrency=eventlet --source accounts --branch -m pytest --alluredir=$(ALLURE_DIR) tests$(ARGS)
 	coverage html -d $(COVERAGE_DIR)
 
 check-coverage:
-	coverage report -m --fail-under 100  --omit=users/dependencies/sendgrid/provider.py
+	coverage report -m --fail-under 100  --omit=accounts/dependencies/sendgrid/provider.py
 
 run:
-	nameko run --config config.yml users.service:UsersService
+	nameko run --config config.yml accounts.service:AccountsService
 
 build-image:
-	docker build -t calumwebb/users-service:$(TAG) .;
+	docker build -t calumwebb/accounts-service:$(TAG) .;
 
 push-image:
-	docker push calumwebb/users-service:$(TAG)
+	docker push calumwebb/accounts-service:$(TAG)

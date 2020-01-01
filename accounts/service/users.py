@@ -6,16 +6,16 @@ from nameko import config
 from nameko.rpc import rpc
 from sqlalchemy import exc
 from sqlalchemy.orm import exc as orm_exc
-from users import schemas, utils
-from users.exceptions.user_tokens import InvalidToken
-from users.exceptions.users import (
+from accounts import schemas, utils
+from accounts.exceptions.user_tokens import InvalidToken
+from accounts.exceptions.users import (
     UserAlreadyExists,
     UserDoesNotExist,
     UserNotAuthorised,
     UserNotVerified,
 )
-from users.service.base import ServiceMixin
-from users.utils import generate_token
+from accounts.service.base import ServiceMixin
+from accounts.utils import generate_token
 
 
 logger = logging.getLogger(__name__)

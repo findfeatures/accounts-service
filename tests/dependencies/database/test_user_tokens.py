@@ -2,15 +2,15 @@ import datetime
 
 import pytest
 from nameko.testing.services import dummy, entrypoint_hook
-from users.dependencies.database.models import User, UserToken
-from users.dependencies.database.provider import Storage
-from users.exceptions.user_tokens import InvalidToken
+from accounts.dependencies.database.models import User, UserToken
+from accounts.dependencies.database.provider import Storage
+from accounts.exceptions.user_tokens import InvalidToken
 
 
 @pytest.fixture
 def service_container(db, container_factory):
     class Service:
-        name = "users"
+        name = "accounts"
 
         storage = Storage()
 

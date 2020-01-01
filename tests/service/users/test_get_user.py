@@ -5,13 +5,13 @@ from mock import call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy.orm import exc as orm_exc
-from users.exceptions.users import UserDoesNotExist
-from users.service import UsersService
+from accounts.exceptions.users import UserDoesNotExist
+from accounts.service import AccountsService
 
 
 def test_get_successful(config, runner_factory):
-    runner = runner_factory(UsersService)
-    container = get_container(runner, UsersService)
+    runner = runner_factory(AccountsService)
+    container = get_container(runner, AccountsService)
     storage = replace_dependencies(container, "storage")
     runner.start()
 
@@ -43,8 +43,8 @@ def test_get_successful(config, runner_factory):
 
 
 def test_get_successful_with_deleted_datetime(config, runner_factory):
-    runner = runner_factory(UsersService)
-    container = get_container(runner, UsersService)
+    runner = runner_factory(AccountsService)
+    container = get_container(runner, AccountsService)
     storage = replace_dependencies(container, "storage")
     runner.start()
 
@@ -76,8 +76,8 @@ def test_get_successful_with_deleted_datetime(config, runner_factory):
 
 
 def test_get_unsuccessful(config, runner_factory):
-    runner = runner_factory(UsersService)
-    container = get_container(runner, UsersService)
+    runner = runner_factory(AccountsService)
+    container = get_container(runner, AccountsService)
     storage = replace_dependencies(container, "storage")
     runner.start()
 

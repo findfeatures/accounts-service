@@ -3,13 +3,13 @@ from mock import call, patch
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy import exc
-from users.exceptions.users import UserAlreadyExists
-from users.service import UsersService
+from accounts.exceptions.users import UserAlreadyExists
+from accounts.service import AccountsService
 
 
 def test_create_user_successful(config, runner_factory):
-    runner = runner_factory(UsersService)
-    container = get_container(runner, UsersService)
+    runner = runner_factory(AccountsService)
+    container = get_container(runner, AccountsService)
     storage, sendgrid = replace_dependencies(container, "storage", "sendgrid")
     runner.start()
 
@@ -22,7 +22,7 @@ def test_create_user_successful(config, runner_factory):
         "display_name": "Test Account",
     }
     with entrypoint_hook(container, "create_user") as create_user:
-        with patch("users.service.users.generate_token", return_value="token"):
+        with patch("accounts.service.users.generate_token", return_value="token"):
 
             result = create_user(user_details=payload)
 
@@ -38,8 +38,8 @@ def test_create_user_successful(config, runner_factory):
 
 
 def test_create_user_unsuccessful(config, runner_factory):
-    runner = runner_factory(UsersService)
-    container = get_container(runner, UsersService)
+    runner = runner_factory(AccountsService)
+    container = get_container(runner, AccountsService)
     storage = replace_dependencies(container, "storage")
     runner.start()
 

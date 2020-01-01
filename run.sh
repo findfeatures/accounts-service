@@ -10,4 +10,4 @@ done
 alembic upgrade head
 
 # Run Service
-nameko run --config config.yml users.service
+nameko run --config config.yml accounts.service

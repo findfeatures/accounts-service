@@ -1,6 +1,6 @@
 # Accounts Service
 
-The users service looks after:
+The accounts service looks after:
 - Users
 - Organizations
 - Billing

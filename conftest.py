@@ -6,8 +6,8 @@ import pytest
 import yaml
 from nameko.cli.main import setup_yaml_parser
 from nameko.testing.services import replace_dependencies
-from users.dependencies.database.provider import Base
-from users.service import UsersService
+from accounts.dependencies.database.provider import Base
+from accounts.service import AccountsService
 
 
 @pytest.fixture(scope="session")
@@ -65,4 +65,4 @@ def create_service(container_factory):
 
 @pytest.fixture
 def service_storage(create_service, db, config):
-    return create_service(UsersService, "storage")
+    return create_service(AccountsService, "storage")

@@ -3,7 +3,7 @@ from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import create_engine
-from users.dependencies.database.models import Base
+from accounts.dependencies.database.models import Base
 
 
 config = context.config
@@ -19,7 +19,7 @@ def get_url():
         db_pass=os.getenv("DB_PASSWORD", "password"),
         db_host=os.getenv("DB_HOST", "localhost"),
         db_port=os.getenv("DB_PORT", "5432"),
-        db_name=os.getenv("DB_NAME", "users"),
+        db_name=os.getenv("DB_NAME", "accounts"),
     )
 
 

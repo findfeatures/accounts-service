@@ -7,12 +7,12 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(
-    name="users-service",
+    name="accounts-service",
     version="1.0",
-    description="Features User Service",
+    description="Features Account Service",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/findfeatures/users-service",
+    url="https://github.com/findfeatures/accounts-service",
     packages=setuptools.find_packages(exclude=["tests", "alembic", "build", "dist"]),
     zip_safe=True,
     install_requires=[

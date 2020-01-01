@@ -2,13 +2,13 @@ import pytest
 from mock import ANY, call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
-from users.exceptions.users import UserNotAuthorised, UserNotVerified
-from users.service import UsersService
+from accounts.exceptions.users import UserNotAuthorised, UserNotVerified
+from accounts.service import AccountsService
 
 
 def test_auth_successful(config, runner_factory):
-    runner = runner_factory(UsersService)
-    container = get_container(runner, UsersService)
+    runner = runner_factory(AccountsService)
+    container = get_container(runner, AccountsService)
     storage = replace_dependencies(container, "storage")
     runner.start()
 
@@ -34,8 +34,8 @@ def test_auth_successful(config, runner_factory):
 
 
 def test_auth_unsuccessful(config, runner_factory):
-    runner = runner_factory(UsersService)
-    container = get_container(runner, UsersService)
+    runner = runner_factory(AccountsService)
+    container = get_container(runner, AccountsService)
     storage = replace_dependencies(container, "storage")
     runner.start()
 
@@ -53,8 +53,8 @@ def test_auth_unsuccessful(config, runner_factory):
 
 
 def test_auth_successful_but_not_verified(config, runner_factory):
-    runner = runner_factory(UsersService)
-    container = get_container(runner, UsersService)
+    runner = runner_factory(AccountsService)
+    container = get_container(runner, AccountsService)
     storage = replace_dependencies(container, "storage")
     runner.start()
 

@@ -6,7 +6,7 @@ import pytest
 import yaml
 from nameko.cli.main import setup_yaml_parser
 from nameko.testing.services import replace_dependencies
-from users.dependencies.database.provider import Base
+from accounts.dependencies.database.provider import Base
 
 
 @pytest.fixture(scope="session")
@@ -33,7 +33,7 @@ def config(test_config, rabbit_config, web_config):
 def db(postgresql_db):
     postgresql_db.install_extension("uuid-ossp")
     db_uri = postgresql_db.engine.url
-    with nameko.config.patch({"DB_URIS": {"users:Base": str(db_uri)}}):
+    with nameko.config.patch({"DB_URIS": {"accounts:Base": str(db_uri)}}):
         Base.metadata.create_all(postgresql_db.engine)
         yield postgresql_db
 

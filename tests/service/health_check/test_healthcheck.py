@@ -1,11 +1,11 @@
 from nameko.containers import ServiceContainer
 from nameko.testing.services import replace_dependencies
-from users.dependencies.database.provider import Storage, StorageWrapper
-from users.service import UsersService
+from accounts.dependencies.database.provider import Storage, StorageWrapper
+from accounts.service import AccountsService
 
 
 def test_healthcheck(config, db, web_session):
-    container = ServiceContainer(UsersService)
+    container = ServiceContainer(AccountsService)
     replace_dependencies(container, storage=StorageWrapper(db, Storage.collections))
     container.start()
 

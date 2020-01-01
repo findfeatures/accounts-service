@@ -43,7 +43,7 @@ FROM base AS install
 
 COPY --from=wheels /application/wheelhouse /wheelhouse
 
-RUN pip install --no-index -f /wheelhouse users_service
+RUN pip install --no-index -f /wheelhouse accounts_service
 
 # ------------------------------------------------------------------------
 
