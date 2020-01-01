@@ -1,11 +1,11 @@
 import pytest
+from accounts.exceptions.user_tokens import InvalidToken
+from accounts.exceptions.users import UserNotAuthorised
+from accounts.service import AccountsService
 from mock import call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy.orm import exc as orm_exc
-from accounts.exceptions.user_tokens import InvalidToken
-from accounts.exceptions.users import UserNotAuthorised
-from accounts.service import AccountsService
 
 
 def test_verify_user_verified(config, runner_factory):

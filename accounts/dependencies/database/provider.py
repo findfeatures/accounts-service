@@ -1,12 +1,12 @@
 import datetime
 
+from accounts import utils
+from accounts.dependencies.database.models import Base, User, UserToken
+from accounts.exceptions.user_tokens import InvalidToken
 from ddtrace import Pin
 from nameko import config
 from nameko_sqlalchemy import Database
 from sqlalchemy.orm import exc as orm_exc
-from accounts import utils
-from accounts.dependencies.database.models import Base, User, UserToken
-from accounts.exceptions.user_tokens import InvalidToken
 
 
 class Collection:

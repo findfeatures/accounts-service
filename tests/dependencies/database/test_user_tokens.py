@@ -1,10 +1,10 @@
 import datetime
 
 import pytest
-from nameko.testing.services import dummy, entrypoint_hook
 from accounts.dependencies.database.models import User, UserToken
 from accounts.dependencies.database.provider import Storage
 from accounts.exceptions.user_tokens import InvalidToken
+from nameko.testing.services import dummy, entrypoint_hook
 
 
 @pytest.fixture

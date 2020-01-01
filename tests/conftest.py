@@ -4,9 +4,9 @@ from collections import namedtuple
 import nameko
 import pytest
 import yaml
+from accounts.dependencies.database.provider import Base
 from nameko.cli.main import setup_yaml_parser
 from nameko.testing.services import replace_dependencies
-from accounts.dependencies.database.provider import Base
 
 
 @pytest.fixture(scope="session")

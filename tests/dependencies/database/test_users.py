@@ -1,11 +1,11 @@
 import datetime
 
 import pytest
+from accounts.dependencies.database.models import User
+from accounts.dependencies.database.provider import Storage
 from nameko.testing.services import dummy, entrypoint_hook
 from sqlalchemy import exc
 from sqlalchemy.orm import exc as orm_exc
-from accounts.dependencies.database.models import User
-from accounts.dependencies.database.provider import Storage
 
 
 @pytest.fixture

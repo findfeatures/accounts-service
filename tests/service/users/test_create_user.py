@@ -1,10 +1,10 @@
 import pytest
+from accounts.exceptions.users import UserAlreadyExists
+from accounts.service import AccountsService
 from mock import call, patch
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy import exc
-from accounts.exceptions.users import UserAlreadyExists
-from accounts.service import AccountsService
 
 
 def test_create_user_successful(config, runner_factory):

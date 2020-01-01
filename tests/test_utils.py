@@ -1,5 +1,5 @@
-from mock import Mock
 from accounts.utils import generate_token, log_entrypoint, sa_to_dict
+from mock import Mock
 
 
 def test_log_entrypoint_calls_function():
