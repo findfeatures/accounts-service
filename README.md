@@ -1,10 +1,17 @@
-# User Service
+# Accounts Service
 
 The users service looks after:
-- User accounts
-- Details regarding "Organizations"
+- Users
+- Organizations
+- Billing
+- Authentication
 
 # Installation
+(To install a pyenv virtualenv)
+```bash
+pyenv virtualenv -p python3.6 3.6.8 accounts-service
+```
+
 Install the requirements into your virtualenv
 ```bash
 pip install -e ".[dev]"
@@ -18,9 +25,4 @@ Make test
 To run the service
 ```bash
 Make run
-```
-
-(To install a pyenv virtualenv)
-```bash
-pyenv virtualenv -p python3.6 3.6.8 user-serv
 ```
