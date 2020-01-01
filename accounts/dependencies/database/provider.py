@@ -1,7 +1,7 @@
 import datetime
 
 from accounts import utils
-from accounts.dependencies.database.models import Base, User, UserToken
+from accounts.dependencies.database.models import Base, Project, User, UserToken
 from accounts.exceptions.user_tokens import InvalidToken
 from ddtrace import Pin
 from nameko import config
@@ -95,6 +95,11 @@ class UserTokens(Collection):
             raise InvalidToken("token is invalid")
 
 
+class Projects(Collection):
+    name = "projects"
+    model = Project
+
+
 class StorageWrapper:
     def __init__(self, db, collections):
         self.db = db
@@ -110,7 +115,7 @@ class StorageWrapper:
 
 
 class Storage(Database):
-    collections = [Users, UserTokens]
+    collections = [Users, UserTokens, Projects]
 
     def __init__(self):
         engine_options = {

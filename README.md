@@ -2,7 +2,7 @@
 
 The accounts service looks after:
 - Users
-- Organizations
+- Projects
 - Billing
 - Authentication
 

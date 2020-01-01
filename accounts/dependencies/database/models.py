@@ -38,20 +38,6 @@ class User(IDMixin, CreatedTimestampMixin, DeletedTimestampMixin, Base):
     verified = Column(Boolean, default=False, server_default="f")
 
 
-# class Organization(IDMixin, CreatedTimestampMixin, DeletedTimestampMixin, Base):
-#     __tablename__ = "organizations"
-#
-#     name = Column(Text, nullable=False)
-#
-#
-# user_organization_table = Table(
-#     "users_organizations",
-#     Base.metadata,
-#     Column("user_id", Integer, ForeignKey("users.id")),
-#     Column("organization_id", Integer, ForeignKey("organizations.id")),
-# )
-
-
 class UserToken(IDMixin, CreatedTimestampMixin, Base):
     __tablename__ = "user_tokens"
 
@@ -59,3 +45,17 @@ class UserToken(IDMixin, CreatedTimestampMixin, Base):
 
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", primaryjoin=user_id == User.id)
+
+
+class Project(IDMixin, CreatedTimestampMixin, DeletedTimestampMixin, Base):
+    __tablename__ = "projects"
+
+    name = Column(Text, nullable=False)
+
+
+user_project_table = Table(
+    "users_projects",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("project_id", Integer, ForeignKey("projects.id")),
+)
