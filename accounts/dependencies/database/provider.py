@@ -36,7 +36,7 @@ class Storage(Database):
 
     def setup(self):
         super().setup()
-        Pin.override(self.engine, service="users-service")
+        Pin.override(self.engine, service="accounts-service")
 
     def get_dependency(self, worker_ctx):
         db = super().get_dependency(worker_ctx)

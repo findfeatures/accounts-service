@@ -120,9 +120,15 @@ class UsersServiceMixin(ServiceMixin):
 
     @rpc(expected_exceptions=(UserNotAuthorised,))
     @utils.log_entrypoint
-    def resend_user_token(self, email):
-
+    def resend_user_token(self, email, password):
         try:
+            is_correct_password = self.storage.users.is_correct_password(
+                email, password
+            )
+
+            if not is_correct_password:
+                raise UserNotAuthorised("user not authorised for this request")
+
             user = self.storage.users.get_from_email(email)
 
             # if user already verified, then raise here
@@ -135,3 +141,5 @@ class UsersServiceMixin(ServiceMixin):
 
         except orm_exc.NoResultFound:
             raise UserNotAuthorised("user not authorised for this request")
+        except UserNotAuthorised as exc:
+            raise exc
