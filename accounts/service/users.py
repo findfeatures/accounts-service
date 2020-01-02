@@ -129,6 +129,7 @@ class UsersServiceMixin(ServiceMixin):
             if not is_correct_password:
                 raise UserNotAuthorised("user not authorised for this request")
 
+            # because we check password above, this will not error
             user = self.storage.users.get_from_email(email)
 
             # if user already verified, then raise here
@@ -138,8 +139,5 @@ class UsersServiceMixin(ServiceMixin):
             token = generate_token(str(uuid4().hex))
             self.storage.user_tokens.create(user["id"], token)
             self.sendgrid.send_signup_verification(user["email"], token)
-
-        except orm_exc.NoResultFound:
-            raise UserNotAuthorised("user not authorised for this request")
         except UserNotAuthorised as exc:
             raise exc
