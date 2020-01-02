@@ -115,8 +115,23 @@ class UsersServiceMixin(ServiceMixin):
 
             self.storage.users.update_verified(user["id"], True)
 
-        except orm_exc.NoResultFound:
-            raise UserNotAuthorised(f"user not authorised for this request")
+        except (orm_exc.NoResultFound, InvalidToken):
+            raise UserNotAuthorised("user not authorised for this request")
 
-        except InvalidToken:
-            raise UserNotAuthorised(f"user not authorised for this request")
+    @rpc(expected_exceptions=(UserNotAuthorised,))
+    @utils.log_entrypoint
+    def resend_user_token(self, email):
+
+        try:
+            user = self.storage.users.get_from_email(email)
+
+            # if user already verified, then raise here
+            if user["verified"]:
+                raise UserNotAuthorised("user not authorised for this request")
+
+            token = generate_token(str(uuid4().hex))
+            self.storage.user_tokens.create(user["id"], token)
+            self.sendgrid.send_signup_verification(user["email"], token)
+
+        except orm_exc.NoResultFound:
+            raise UserNotAuthorised("user not authorised for this request")
