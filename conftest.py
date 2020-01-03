@@ -1,6 +1,7 @@
 import os
 from collections import namedtuple
 
+import mock
 import nameko
 import pytest
 import yaml
@@ -66,3 +67,9 @@ def create_service(container_factory):
 @pytest.fixture
 def service_storage(create_service, db, config):
     return create_service(AccountsService, "storage")
+
+
+@pytest.fixture
+def mock_stripe():
+    with mock.patch("accounts.dependencies.stripe.provider.stripe") as s:
+        yield s

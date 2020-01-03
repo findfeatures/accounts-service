@@ -15,7 +15,7 @@ coverage:
 	coverage html -d $(COVERAGE_DIR)
 
 check-coverage:
-	coverage report -m --fail-under 100  --omit=accounts/dependencies/sendgrid/provider.py
+	coverage report -m --fail-under 100  --omit=accounts/dependencies/send_grid/provider.py
 
 run:
 	nameko run --config config.yml accounts.service:AccountsService

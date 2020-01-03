@@ -12,7 +12,7 @@ from sqlalchemy.orm import exc as orm_exc
 def test_resend_user_token(config, runner_factory):
     runner = runner_factory(AccountsService)
     container = get_container(runner, AccountsService)
-    storage, sendgrid = replace_dependencies(container, "storage", "sendgrid")
+    storage, send_grid = replace_dependencies(container, "storage", "send_grid")
     runner.start()
 
     email = "test@google.com"
@@ -29,7 +29,7 @@ def test_resend_user_token(config, runner_factory):
 
     storage.user_tokens.create.return_value = None
 
-    sendgrid.send_signup_verification.return_value = None
+    send_grid.send_signup_verification.return_value = None
 
     with entrypoint_hook(container, "resend_user_token") as resend_user_token:
         result = resend_user_token(email, password)
@@ -40,7 +40,7 @@ def test_resend_user_token(config, runner_factory):
 
         assert storage.user_tokens.create.call_args == call(user_id, ANY)
 
-        assert sendgrid.send_signup_verification.call_args == call(email, ANY)
+        assert send_grid.send_signup_verification.call_args == call(email, ANY)
 
         assert result is None
 
@@ -48,7 +48,7 @@ def test_resend_user_token(config, runner_factory):
 def test_resend_user_token_invalid_password(config, runner_factory):
     runner = runner_factory(AccountsService)
     container = get_container(runner, AccountsService)
-    storage, sendgrid = replace_dependencies(container, "storage", "sendgrid")
+    storage, send_grid = replace_dependencies(container, "storage", "send_grid")
     runner.start()
 
     email = "test@google.com"
@@ -67,7 +67,7 @@ def test_resend_user_token_invalid_password(config, runner_factory):
 def test_resend_user_token_already_verified(config, runner_factory):
     runner = runner_factory(AccountsService)
     container = get_container(runner, AccountsService)
-    storage, sendgrid = replace_dependencies(container, "storage", "sendgrid")
+    storage, send_grid = replace_dependencies(container, "storage", "send_grid")
     runner.start()
 
     email = "test@google.com"

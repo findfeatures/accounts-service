@@ -10,7 +10,7 @@ from sqlalchemy import exc
 def test_create_user_successful(config, runner_factory):
     runner = runner_factory(AccountsService)
     container = get_container(runner, AccountsService)
-    storage, sendgrid = replace_dependencies(container, "storage", "sendgrid")
+    storage, send_grid = replace_dependencies(container, "storage", "send_grid")
     runner.start()
 
     storage.users.create.return_value = 1
@@ -32,7 +32,7 @@ def test_create_user_successful(config, runner_factory):
             payload["email"], payload["password"], payload["display_name"]
         )
 
-        assert sendgrid.send_signup_verification.call_args == call(
+        assert send_grid.send_signup_verification.call_args == call(
             payload["email"], "token"
         )
 

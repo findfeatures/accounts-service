@@ -1,9 +1,11 @@
 from accounts.dependencies.database.provider import Storage
-from accounts.dependencies.sendgrid.provider import SendGrid
+from accounts.dependencies.send_grid.provider import SendGrid
+from accounts.dependencies.stripe.provider import Stripe
 
 
 class ServiceMixin:
     name = "accounts"
 
     storage = Storage()
-    sendgrid = SendGrid()
+    send_grid = SendGrid()
+    stripe = Stripe()

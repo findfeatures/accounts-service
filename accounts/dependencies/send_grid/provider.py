@@ -10,7 +10,7 @@ path = os.path.dirname(__file__)
 
 """
 Currently this dependency uses HTML rather than templates but its pretty trivial
-to add template support instead. (Templates are the templates defined in the sendgrid
+to add template support instead. (Templates are the templates defined in the send_grid
 UI which can be dynamically changed)
 """
 

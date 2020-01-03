@@ -65,7 +65,7 @@ class UsersServiceMixin(ServiceMixin):
 
             self.storage.user_tokens.create(user_id, token)
 
-            self.sendgrid.send_signup_verification(user_details["email"], token)
+            self.send_grid.send_signup_verification(user_details["email"], token)
 
             return user_id
         except exc.IntegrityError:
@@ -138,6 +138,6 @@ class UsersServiceMixin(ServiceMixin):
 
             token = generate_token(str(uuid4().hex))
             self.storage.user_tokens.create(user["id"], token)
-            self.sendgrid.send_signup_verification(user["email"], token)
+            self.send_grid.send_signup_verification(user["email"], token)
         except UserNotAuthorised as exc:
             raise exc
