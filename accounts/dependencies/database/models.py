@@ -1,4 +1,14 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Table, Text, text
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Table,
+    Text,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EmailType, PasswordType
@@ -43,7 +53,7 @@ class UserToken(IDMixin, CreatedTimestampMixin, Base):
 
     token = Column(PasswordType(schemes=["pbkdf2_sha512"]), nullable=False)
 
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
     user = relationship("User", primaryjoin=user_id == User.id)
 
 
@@ -53,9 +63,17 @@ class Project(IDMixin, CreatedTimestampMixin, DeletedTimestampMixin, Base):
     name = Column(Text, nullable=False)
 
 
-user_project_table = Table(
-    "users_projects",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("users.id")),
-    Column("project_id", Integer, ForeignKey("projects.id")),
-)
+class UserProject(IDMixin, CreatedTimestampMixin, Base):
+    __tablename__ = "users_projects"
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "project_id", name="user_projects_unique_ids"),
+    )
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    user = relationship("User", primaryjoin=user_id == User.id)
+
+    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False, index=True)
+    project = relationship("Project", primaryjoin=project_id == Project.id)
+
+    verified = Column("verified", Boolean, server_default="f")

@@ -9,3 +9,13 @@ class CreateUserRequest(Schema):
 
 class CreateProjectRequest(Schema):
     name = fields.String(required=True)
+
+
+class CreateStripeCheckoutSessionRequest(Schema):
+    """user_id, email, plan, success_url, cancel_url"""
+
+    user_id = fields.Integer(required=True)
+    email = fields.String(required=True)
+    plan = fields.String(required=True)
+    success_url = fields.String(required=True)
+    cancel_url = fields.String(required=True)

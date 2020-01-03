@@ -3,7 +3,7 @@ import datetime
 import pytest
 from accounts.exceptions.users import UserNotAuthorised
 from accounts.service import AccountsService
-from mock import call, ANY
+from mock import ANY, call
 from nameko.testing.services import entrypoint_hook, replace_dependencies
 from nameko.testing.utils import get_container
 from sqlalchemy.orm import exc as orm_exc

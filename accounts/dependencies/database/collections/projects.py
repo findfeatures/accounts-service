@@ -1,15 +1,19 @@
 from accounts.dependencies.database.collections import Collection
-from accounts.dependencies.database.models import Project
+from accounts.dependencies.database.models import Project, UserProject
 
 
 class Projects(Collection):
     name = "projects"
     model = Project
 
-    def create(self, name):
-        new_project = self.model(name=name)
+    def get_all_verified(self, user_id):
+        project_data = (
+            self.db.query(self.model)
+            .join(UserProject)
+            .filter(UserProject.user_id == user_id, UserProject.verified.is_(True))
+            .all()
+        )
+        import pdb
 
-        with self.db.get_session() as session:
-            session.add(new_project)
-
-        return new_project.id
+        pdb.set_trace()
+        pass
