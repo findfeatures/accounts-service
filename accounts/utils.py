@@ -1,7 +1,6 @@
 import datetime
 import logging
 from functools import wraps
-from uuid import uuid4
 
 
 logger = logging.getLogger(__name__)
@@ -10,7 +9,9 @@ logger = logging.getLogger(__name__)
 def log_entrypoint(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        logger.info(f"Calling {func.__name__}!")
+        logger.info(
+            f"[{datetime.datetime.utcnow().isoformat()}]: Calling {func.__name__}!"
+        )
 
         return func(*args, **kwargs)
 
@@ -32,18 +33,22 @@ def sa_to_dict(sensitive_fields=None):
         def wrapper(*args, **kwargs):
             result = func(*args, **kwargs)
 
-            result_dict = result.__dict__.copy()
-            result_dict.pop("_sa_instance_state", None)
-
-            if sensitive_fields:
-                for sensitive_field in sensitive_fields:
-                    result_dict.pop(sensitive_field, None)
-
-            return result_dict
+            return _sa_to_dict(result, sensitive_fields=sensitive_fields)
 
         return wrapper
 
     return actual_decorator
+
+
+def _sa_to_dict(result, sensitive_fields=None):
+    result_dict = result.__dict__.copy()
+    result_dict.pop("_sa_instance_state", None)
+
+    if sensitive_fields:
+        for sensitive_field in sensitive_fields:
+            result_dict.pop(sensitive_field, None)
+
+    return result_dict
 
 
 def generate_token(uuid):
