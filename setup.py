@@ -31,6 +31,7 @@ setuptools.setup(
         "alembic==1.2.1",
         "PyJWT==1.7.1",
         "send_grid==6.1.0",
+        "walrus==0.8.0",
     ],
     extras_require={
         "dev": [

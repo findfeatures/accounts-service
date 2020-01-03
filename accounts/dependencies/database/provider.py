@@ -1,4 +1,7 @@
 from accounts.dependencies.database.collections.projects import Projects
+from accounts.dependencies.database.collections.stripe_sessions_completed import (
+    StripeSessionsCompleted,
+)
 from accounts.dependencies.database.collections.user_tokens import UserTokens
 from accounts.dependencies.database.collections.users import Users
 from accounts.dependencies.database.models import Base
@@ -22,7 +25,7 @@ class StorageWrapper:
 
 
 class Storage(Database):
-    collections = [Users, UserTokens, Projects]
+    collections = [Users, UserTokens, Projects, StripeSessionsCompleted]
 
     def __init__(self):
         engine_options = {
@@ -40,4 +43,5 @@ class Storage(Database):
 
     def get_dependency(self, worker_ctx):
         db = super().get_dependency(worker_ctx)
+
         return StorageWrapper(db, self.collections)

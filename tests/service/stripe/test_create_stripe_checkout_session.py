@@ -10,7 +10,7 @@ from nameko.testing.utils import get_container
 def test_create_stripe_checkout_session_successful(config, runner_factory):
     runner = runner_factory(AccountsService)
     container = get_container(runner, AccountsService)
-    stripe = replace_dependencies(container, "stripe")
+    stripe, storage = replace_dependencies(container, "stripe", "storage")
     runner.start()
 
     user_id = 123
@@ -18,8 +18,11 @@ def test_create_stripe_checkout_session_successful(config, runner_factory):
     plan = "plan1"
     success_url = "http://success.com"
     cancel_url = "http://cancel.com"
+    project_id = 1
 
     stripe.checkout.Session.create.return_value = Mock(id="session_id")
+
+    storage.projects.set_checkout_session_id.return_value = None
 
     with entrypoint_hook(
         container, "create_stripe_checkout_session"
@@ -31,6 +34,7 @@ def test_create_stripe_checkout_session_successful(config, runner_factory):
                 "plan": plan,
                 "success_url": success_url,
                 "cancel_url": cancel_url,
+                "project_id": project_id,
             }
         )
 
@@ -42,6 +46,10 @@ def test_create_stripe_checkout_session_successful(config, runner_factory):
             subscription_data={"items": [{"plan": plan}]},
             success_url=success_url + "?session_id={CHECKOUT_SESSION_ID}",
             cancel_url=cancel_url,
+        )
+
+        assert storage.projects.set_checkout_session_id.call_args == call(
+            project_id, "session_id"
         )
 
 
@@ -56,6 +64,7 @@ def test_create_stripe_checkout_session_unsuccessful(config, runner_factory):
     plan = "plan1"
     success_url = "http://success.com"
     cancel_url = "http://cancel.com"
+    project_id = 1
 
     stripe.checkout.Session.create.side_effect = stripe_payment.error.StripeError()
 
@@ -70,5 +79,6 @@ def test_create_stripe_checkout_session_unsuccessful(config, runner_factory):
                     "plan": plan,
                     "success_url": success_url,
                     "cancel_url": cancel_url,
+                    "project_id": project_id,
                 }
             )

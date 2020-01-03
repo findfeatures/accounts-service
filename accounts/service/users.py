@@ -95,9 +95,15 @@ class UsersServiceMixin(ServiceMixin):
         if not user_details["verified"]:
             raise UserNotVerified("user is not verified")
 
+        total_projects = self.storage.projects.get_total_projects(user_details["id"])
+
         jwt_result = {
             "JWT": jwt.encode(
-                {"user_id": user_details["id"], "email": user_details["email"]},
+                {
+                    "user_id": user_details["id"],
+                    "email": user_details["email"],
+                    "total_projects": total_projects,
+                },
                 config.get("JWT_SECRET"),
                 algorithm="HS256",
             ).decode("utf-8")

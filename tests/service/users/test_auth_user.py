@@ -15,6 +15,7 @@ def test_auth_successful(config, runner_factory):
     user_id = 123
     email = "test@google.com"
     password = "password"
+    total_projects = 1
 
     storage.users.is_correct_password.return_value = True
     storage.users.get_from_email.return_value = {
@@ -22,6 +23,7 @@ def test_auth_successful(config, runner_factory):
         "email": email,
         "verified": True,
     }
+    storage.projects.get_total_projects.return_value = total_projects
 
     with entrypoint_hook(container, "auth_user") as auth_user:
         result = auth_user(email=email, password=password)
@@ -31,6 +33,8 @@ def test_auth_successful(config, runner_factory):
         assert storage.users.is_correct_password.call_args == call(email, password)
 
         assert storage.users.get_from_email.call_args == call(email)
+
+        assert storage.projects.get_total_projects.call_args == call(user_id)
 
 
 def test_auth_unsuccessful(config, runner_factory):

@@ -1,10 +1,13 @@
+import enum
+
 from sqlalchemy import (
+    JSON,
     Boolean,
     Column,
     DateTime,
+    Enum,
     ForeignKey,
     Integer,
-    Table,
     Text,
     UniqueConstraint,
     text,
@@ -12,6 +15,12 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EmailType, PasswordType
+
+
+class StripeSessionCompletedStatusEnum(enum.Enum):
+    processing = "processing"
+    finished = "completed"
+    failed = "failed"
 
 
 Base = declarative_base()
@@ -62,6 +71,8 @@ class Project(IDMixin, CreatedTimestampMixin, DeletedTimestampMixin, Base):
 
     name = Column(Text, nullable=False)
 
+    checkout_session_id = Column(Text, nullable=True)
+
 
 class UserProject(IDMixin, CreatedTimestampMixin, Base):
     __tablename__ = "users_projects"
@@ -77,3 +88,16 @@ class UserProject(IDMixin, CreatedTimestampMixin, Base):
     project = relationship("Project", primaryjoin=project_id == Project.id)
 
     verified = Column("verified", Boolean, server_default="f")
+
+
+class StripeSessionCompleted(IDMixin, CreatedTimestampMixin, Base):
+    __tablename__ = "stripe_sessions_completed"
+
+    __table_args__ = (
+        UniqueConstraint("event_id", name="stripe_sessions_completed_unique_event_id"),
+    )
+
+    event_id = Column(Text, index=True, nullable=False)
+    session_id = Column(Text, index=True, nullable=False)
+    status = Column(Enum(StripeSessionCompletedStatusEnum), nullable=False)
+    event_data = Column(JSON, nullable=False)
