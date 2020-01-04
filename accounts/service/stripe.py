@@ -21,8 +21,8 @@ class StripeServiceMixin(ServiceMixin):
         {
             "type": "checkout.session.completed",
             "created": {
-                # Check for events created in the last 24 hours.
-                "gte": int(time.time() - 24 * 60 * 60)
+                # Check for events created in the last 6 hours.
+                "gte": int(time.time() - 6 * 60 * 60)
             },
             "limit": 100,
         },
