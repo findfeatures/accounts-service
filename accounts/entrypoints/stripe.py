@@ -16,7 +16,7 @@ class NamekoStripe(Entrypoint):
 
     def setup(self):
         self.stripe = stripe
-        self.stripe.api_key = config.get("STRIPE_PAYMENT_API_KEY")
+        self.stripe.api_key = config.get("STRIPE").get("API_KEY")
 
     def start(self):
         self.container.spawn_managed_thread(self.run, identifier="NamekoStripe.run")

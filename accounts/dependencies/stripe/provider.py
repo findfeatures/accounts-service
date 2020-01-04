@@ -9,7 +9,7 @@ class Stripe(DependencyProvider):
         self.api_key = None
 
     def setup(self):
-        self.api_key = config.get("STRIPE_PAYMENT_API_KEY")
+        self.api_key = config.get("STRIPE").get("API_KEY")
 
     def start(self):
         self.client = stripe
