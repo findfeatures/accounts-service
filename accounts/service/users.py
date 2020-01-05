@@ -2,6 +2,7 @@ import logging
 from uuid import uuid4
 
 import jwt
+import datetime
 from accounts import schemas, utils
 from accounts.exceptions.user_tokens import InvalidToken
 from accounts.exceptions.users import (
@@ -103,6 +104,8 @@ class UsersServiceMixin(ServiceMixin):
                     "user_id": user_details["id"],
                     "email": user_details["email"],
                     "total_projects": total_projects,
+                    # exp is number of seconds since epoch. 1 day expiry
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1)
                 },
                 config.get("JWT_SECRET"),
                 algorithm="HS256",
