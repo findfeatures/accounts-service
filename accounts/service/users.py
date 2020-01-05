@@ -96,16 +96,13 @@ class UsersServiceMixin(ServiceMixin):
         if not user_details["verified"]:
             raise UserNotVerified("user is not verified")
 
-        total_projects = self.storage.projects.get_total_projects(user_details["id"])
-
         jwt_result = {
             "JWT": jwt.encode(
                 {
                     "user_id": user_details["id"],
                     "email": user_details["email"],
-                    "total_projects": total_projects,
                     # exp is number of seconds since epoch. 1 day expiry
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1)
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1),
                 },
                 config.get("JWT_SECRET"),
                 algorithm="HS256",
