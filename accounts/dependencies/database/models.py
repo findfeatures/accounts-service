@@ -1,7 +1,6 @@
 import enum
 
 from sqlalchemy import (
-    JSON,
     Boolean,
     Column,
     DateTime,
@@ -12,6 +11,7 @@ from sqlalchemy import (
     UniqueConstraint,
     text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import EmailType, PasswordType
@@ -100,4 +100,26 @@ class StripeSessionCompleted(IDMixin, CreatedTimestampMixin, Base):
     event_id = Column(Text, index=True, nullable=False)
     session_id = Column(Text, index=True, nullable=False)
     status = Column(Enum(StripeSessionCompletedStatusEnum), nullable=False)
-    event_data = Column(JSON, nullable=False)
+    event_data = Column(JSONB, nullable=False)
+
+
+class AuditLog(IDMixin, CreatedTimestampMixin, Base):
+    __tablename__ = "audit_logs"
+
+    project_id = Column(Integer, ForeignKey("projects.id"), nullable=False, index=True)
+    project = relationship("Project", primaryjoin=project_id == Project.id)
+
+    log_type = Column(Text, index=True, nullable=False)
+
+    meta_data = Column(JSONB, nullable=False)
+
+
+class UserNotification(IDMixin, CreatedTimestampMixin, Base):
+    __tablename__ = "user_notifications"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    user = relationship("User", primaryjoin=user_id == User.id)
+
+    notification_type = Column(Text, index=True, nullable=False)
+
+    meta_data = Column(JSONB, nullable=False)

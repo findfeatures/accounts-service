@@ -20,11 +20,11 @@ class Projects(Collection):
         # filters out projects which user isn't verified for and
         # where not paid yet.
         projects_data = (
-            self.db.session.query(self.model)
+            self.db.session.query(Project)
             .join(UserProject)
             .join(
                 StripeSessionCompleted,
-                StripeSessionCompleted.session_id == self.model.checkout_session_id,
+                StripeSessionCompleted.session_id == Project.checkout_session_id,
                 isouter=True,
             )
             .filter(
@@ -47,7 +47,7 @@ class Projects(Collection):
     def set_checkout_session_id(self, project_id, checkout_session_id):
 
         with self.db.get_session() as session:
-            project = session.query(self.model).get(project_id)
+            project = session.query(Project).get(project_id)
 
             if project.checkout_session_id:
                 raise CheckoutSessionAlreadyExists(
@@ -55,3 +55,19 @@ class Projects(Collection):
                 )
 
             project.checkout_session_id = checkout_session_id
+
+    def create_project(self, user_id, name):
+
+        with self.db.get_session() as session:
+            project = Project(name=name)
+            session.add(project)
+            session.add(UserProject(user_id=user_id, project=project, verified=True))
+        return project.id
+
+    def get_project_id_from_stripe_session_id(self, session_id):
+        project = (
+            self.db.session.query(Project)
+            .filter_by(checkout_session_id=session_id)
+            .one()
+        )
+        return project.id

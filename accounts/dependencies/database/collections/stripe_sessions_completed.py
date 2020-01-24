@@ -12,11 +12,15 @@ class StripeSessionsCompleted(Collection):
 
     @sa_to_dict()
     def get_event(self, event_id):
-        result = self.db.session.query(self.model).filter_by(event_id=event_id).one()
+        result = (
+            self.db.session.query(StripeSessionCompleted)
+            .filter_by(event_id=event_id)
+            .one()
+        )
         return result
 
     def create(self, event_id, session_id, event_data):
-        new_event = self.model(
+        new_event = StripeSessionCompleted(
             event_id=event_id,
             session_id=session_id,
             status=StripeSessionCompletedStatusEnum.processing,
@@ -27,6 +31,8 @@ class StripeSessionsCompleted(Collection):
 
     def mark_as_finished(self, event_id):
         with self.db.get_session() as session:
-            result = session.query(self.model).filter_by(event_id=event_id).one()
+            result = (
+                session.query(StripeSessionCompleted).filter_by(event_id=event_id).one()
+            )
 
             result.status = StripeSessionCompletedStatusEnum.finished

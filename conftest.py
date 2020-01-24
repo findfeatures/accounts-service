@@ -18,7 +18,7 @@ def project_root():
 
 @pytest.fixture(scope="session")
 def test_config(project_root):
-    config_file = os.path.join(project_root, "config.yaml")
+    config_file = os.path.join(project_root, "config.yml")
     setup_yaml_parser()
     with open(config_file) as stream:
         config = yaml.unsafe_load(stream.read())

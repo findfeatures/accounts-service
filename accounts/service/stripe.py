@@ -11,7 +11,7 @@ from accounts.exceptions.stripe import UnableToCreateCheckoutSession
 from accounts.service.base import ServiceMixin
 from nameko.rpc import rpc
 from sqlalchemy.orm import exc as orm_exc
-
+from accounts.dependencies.database.collections.audit_logs import AuditLogType
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +26,13 @@ class StripeServiceMixin(ServiceMixin):
             },
             "limit": 100,
         },
-        polling_period=5,
+        polling_period=10,
     )
     def stripe_process_checkout_completed(self, event):
+        # this is probably really fragile and needs to be refactored better.
         event_id = event["id"]
         session_id = event["data"]["object"]["id"]
+        subscription_plan_id = event["data"]["object"]["display_items"][0]["plan"]["id"]
 
         # time to live in milliseconds (30 seconds)
         lock = NonBlockingLock(
@@ -58,6 +60,19 @@ class StripeServiceMixin(ServiceMixin):
 
                 self.storage.stripe_sessions_completed.create(
                     event_id, session_id, event
+                )
+
+                project_id = self.storage.projects.get_project_id_from_stripe_session_id(
+                    session_id
+                )
+
+                subscription_started = AuditLogType.subscription_started(
+                    subscription_plan_id
+                )
+                self.storage.audit_logs.create_log(
+                    project_id,
+                    subscription_started.log_type,
+                    subscription_started.meta_data,
                 )
 
             self.storage.stripe_sessions_completed.mark_as_finished(event_id)

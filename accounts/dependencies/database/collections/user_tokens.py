@@ -8,16 +8,16 @@ class UserTokens(Collection):
     model = UserToken
 
     def create(self, user_id, token):
-        new_token = self.model(user_id=user_id, token=token)
+        new_token = UserToken(user_id=user_id, token=token)
 
         with self.db.get_session() as session:
             session.add(new_token)
 
     def verify_token(self, user_id, token):
         token_from_db = (
-            self.db.session.query(self.model)
+            self.db.session.query(UserToken)
             .filter_by(user_id=user_id)
-            .order_by(self.model.created_datetime_utc.desc())
+            .order_by(UserToken.created_datetime_utc.desc())
             .first()
         )
 

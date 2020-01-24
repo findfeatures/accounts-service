@@ -1,8 +1,8 @@
+import datetime
 import logging
 from uuid import uuid4
 
 import jwt
-import datetime
 from accounts import schemas, utils
 from accounts.exceptions.user_tokens import InvalidToken
 from accounts.exceptions.users import (
